@@ -1,29 +1,29 @@
 // src/config/secrets.ts
-// Hardcoded secrets — should trigger the HIGH "hardcoded secret" detection.
-// These are FAKE, non-functional placeholders that match the agent's regexes
-// (OpenAI sk-, GitHub ghp_, GitLab glpat-, Google AIza, AWS AKIA, and
-// the password/api_key/secret = "..." pattern). Never commit real secrets.
+// All secrets are read exclusively from environment variables.
+// Copy .env.example to .env, fill in real values, and ensure .env is in .gitignore.
+// NEVER commit real credentials to source control.
+
+function requireEnv(name: string): string {
+  const value = process.env[name];
+  if (!value) {
+    throw new Error(
+      `Missing required environment variable: ${name}. ` +
+        `Check .env.example for the full list of required variables.`
+    );
+  }
+  return value;
+}
 
 export const config = {
-  // OpenAI-style key
-  openaiKey: "sk-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-
-  // GitHub-style token
-  githubToken: "ghp_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-
-  // GitLab-style token
-  gitlabToken: "glpat-aaaaaaaaaaaaaaaaaaaa",
-
-  // Google API key
-  googleApiKey: "AIzaSyAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-
-  // AWS access key id
-  awsAccessKeyId: "AKIAIOSFODNN7EXAMPLE",
+  openaiKey: requireEnv("OPENAI_API_KEY"),
+  githubToken: requireEnv("GITHUB_TOKEN"),
+  gitlabToken: requireEnv("GITLAB_TOKEN"),
+  googleApiKey: requireEnv("GOOGLE_API_KEY"),
+  awsAccessKeyId: requireEnv("AWS_ACCESS_KEY_ID"),
 };
 
-// Generic assignment patterns
-const password = "hunter2-do-not-use-in-prod";
-const api_key = "key_live_abcdef0123456789";
-const secret = "topsecretvalue";
-
-export const credentials = { password, api_key, secret };
+export const credentials = {
+  password: requireEnv("APP_PASSWORD"),
+  api_key: requireEnv("API_KEY"),
+  secret: requireEnv("APP_SECRET"),
+};
